@@ -50,6 +50,9 @@ class Coordinate {
         return 'Merry Christmas!!!!!'
     }
 
+    addCoordinate(otherCoord) {
+        return new Coordinate(this.x + otherCoord.x, this.i + otherCoord.i)
+    }
     toString() {
         return `${this.x} + ${this.i}i`
     }
@@ -65,18 +68,40 @@ function setup() {
 
     document.querySelector('body').appendChild(canvas)
     
-    let test = new Coordinate(12.13,13.2)
-    console.log(test.squareI())
-    console.log(test.squareX())
-    console.log(test.innerOuter())
-    console.log(test.squareCoordinate().toString())
+    //test code!
+    let test = new Coordinate(-1, 0)
+    console.log(`number of iterations: ${determineIterations(test)}`)
+
 
     console.log('phoenix loves jett')
-    let newCoord = test.squareCoordinate()
-    console.log(newCoord)
+
 
     drawFullImage()
+    
 
+}
+
+//determine how many steps it takes for a coordinate to blow up, otherwise 20 for coords in the mandelbrort set
+function determineIterations(coordinate) {
+    let numberIterations = mandelbrortEquation(new Coordinate(0,0), coordinate, 1);
+    console.log(numberIterations)
+    return numberIterations
+}
+
+//calculate a new coordinate based on the formula of the mandelbrot set.
+function mandelbrortEquation(coordinate, constant, iteration) {
+    //Z = (z)^2 + C
+    let result
+
+    //if the coordinate numbers expand into infinity, return the iteration and its said to be not in the mandelbrort set
+    //if this function has been called 20 times, return 20 as it is inside the mandelbrot set.
+    if (coordinate.x > 100 || coordinate.i > 100 || iteration >= 20) {
+        return iteration
+    }
+
+    result = coordinate.squareCoordinate().addCoordinate(constant)
+    console.log(result.toString());
+    return mandelbrortEquation(result, constant, iteration + 1) //call again recursively
 
 }
 
