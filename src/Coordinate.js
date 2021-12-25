@@ -36,6 +36,10 @@ export default class Coordinate {
     addCoordinate(otherCoord) {
         return new Coordinate(this.x + otherCoord.x, this.i + otherCoord.i)
     }
+
+    magnitude() {
+        return Math.sqrt(this.x*this.x + this.i*this.i)
+    }
     toString() {
         return `${this.x} + ${this.i}i`
     }
