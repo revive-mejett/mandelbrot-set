@@ -12,8 +12,26 @@
     <h1>
         my canvas
     </h1>
-    <!-- <canvas class="mandelbrort">
+    <main>
+        <section id="canvas-section"></section>
+        <section class="toolbar">
+            <form>
+                <label for="zoom">Zoom</label>
+                <input type="number" min="1" max="20000" id="zoom">
 
-    </canvas> -->
+                <label for="pan-x" id="pan-x-label">Pan X:</label>
+                <input type="range" min="-1000" max="1000" id="pan-x" value="0">
+                <span id="pan-x-display"></span>
+
+                <label for="pan-i" id="pan-i-label">Pan I:</label>
+                <input type="range" min="-1000" max="1000" id="pan-i" value="0">
+                <span id="pan-i-display"></span>
+            </form>
+            <button id="re-render">Re render</button>
+        </section>
+    </main>
+    
+
+    
 </body>
 </html>

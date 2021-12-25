@@ -1,3 +1,29 @@
-.mandelbrort {
+.mandelbrot {
     border: 1px black dashed;
 }
+
+body {
+    background-color: black;
+}
+
+body * {
+    color: white;
+}
+
+.toolbar > * {
+    border: 2px dashed rgb(0, 255, 255);
+    padding: 0.5rem;
+}
+
+input {
+    border: 2px dashed rgb(0, 255, 255);
+    background-color: rgb(50, 50, 0);
+}
+
+button {
+    border: 2px dashed rgb(0, 255, 255);
+    background-color: rgb(50, 50, 0);
+    padding: 0.5rem;
+}
+
+
