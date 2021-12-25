@@ -27,3 +27,8 @@ button {
 }
 
 
+button:invalid {
+    background-color: rgb(211, 99, 151);
+}
+
+

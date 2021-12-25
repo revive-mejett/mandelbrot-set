@@ -5,8 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <script src="mandelbrot.js"></script>
+    <script type="module" data-plugins="transform-modules-umd"src="src/Coordinate.js"></script>
+    <script defer type="module" src="mandelbrot.js"></script>
     <title>Mwwandelbrort Set</title>
+
 </head>
 <body>
     <h1>
@@ -17,17 +19,18 @@
         <section class="toolbar">
             <form>
                 <label for="zoom">Zoom</label>
-                <input type="number" min="1" max="20000" id="zoom">
+                <input type="number" min="1" max="20000" id="zoom" value="100" required>
 
                 <label for="pan-x" id="pan-x-label">Pan X:</label>
                 <input type="range" min="-1000" max="1000" id="pan-x" value="0">
-                <span id="pan-x-display"></span>
+                <span id="pan-x-display">0</span>
 
                 <label for="pan-i" id="pan-i-label">Pan I:</label>
                 <input type="range" min="-1000" max="1000" id="pan-i" value="0">
-                <span id="pan-i-display"></span>
+                <span id="pan-i-display">0</span>
+                <button type="submit" id="re-render">Re render</button>
             </form>
-            <button id="re-render">Re render</button>
+            
         </section>
     </main>
     
