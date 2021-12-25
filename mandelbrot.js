@@ -12,6 +12,7 @@ let colourHue = 0;
 
 // the width of a unit square.
 const imageWidth = 10
+const maxIterations = 20
 let coordinateOffsetX
 let coordinateOffsetI
 
@@ -69,8 +70,8 @@ function setup() {
     document.querySelector('body').appendChild(canvas)
     
     //test code!
-    let test = new Coordinate(-1, 0)
-    console.log(`number of iterations: ${determineIterations(test)}`)
+    let test = new Coordinate(-1.5, 1)
+    let numberIterations = determineIterations(test)
 
 
     console.log('phoenix loves jett')
@@ -84,7 +85,6 @@ function setup() {
 //determine how many steps it takes for a coordinate to blow up, otherwise 20 for coords in the mandelbrort set
 function determineIterations(coordinate) {
     let numberIterations = mandelbrortEquation(new Coordinate(0,0), coordinate, 1);
-    console.log(numberIterations)
     return numberIterations
 }
 
@@ -95,28 +95,25 @@ function mandelbrortEquation(coordinate, constant, iteration) {
 
     //if the coordinate numbers expand into infinity, return the iteration and its said to be not in the mandelbrort set
     //if this function has been called 20 times, return 20 as it is inside the mandelbrot set.
-    if (coordinate.x > 100 || coordinate.i > 100 || iteration >= 20) {
+    if (coordinate.x > 100 || coordinate.i > 100 || iteration >= maxIterations) {
         return iteration
     }
 
     result = coordinate.squareCoordinate().addCoordinate(constant)
-    console.log(result.toString());
+;
     return mandelbrortEquation(result, constant, iteration + 1) //call again recursively
 
 }
 
 function drawFullImage() {
     const canvas = document.querySelector('.mandelbrort')
-    console.log(canvas.getAttribute('width'))
-    console.log(canvas.getAttribute('height'))
-    console.log(typeof parseNumber(canvas.getAttribute('height')))
+
 
 
     let ctx = canvas.getContext('2d')
     let pixelImage
     let column
     let row
-
     
     //colour all the rows in a loop
     for (row = 0; row < parseNumber(canvas.getAttribute('height')); row+=imageWidth) {
@@ -126,7 +123,7 @@ function drawFullImage() {
     
     
     
-    //colour a full row
+    //colour a full row.
     function colourRow() {
         for (column = 0; column < parseNumber(canvas.getAttribute('width')); column += imageWidth) {
             //color the single pixel (or the square if each unit > 1 pixel)
@@ -138,17 +135,58 @@ function drawFullImage() {
     //colour a single square or pixel
     function colourSquare() {
         pixelImage = ctx.createImageData(imageWidth, imageWidth)
-        // console.log(`Graph X pos: ${convertToXCoordinate(row)}`)
-        // console.log(`Graph I pos: ${convertToICoordinate(column)}`)
+        // get a coordinate based on the position of this square
+        let currentCoordinate = new Coordinate(convertToXCoordinate(column), convertToICoordinate(row))
+        let colour = determineColour(determineIterations(currentCoordinate))
+
         for (let i = 0; i < pixelImage.data.length; i += 4) {
-            pixelImage.data[i] = column //r
-            pixelImage.data[i + 1] = 0 //g
-            pixelImage.data[i + 2] = row //b
-            pixelImage.data[i + 3] = 255
+            pixelImage.data[i] = colour.red //r
+            pixelImage.data[i + 1] = colour.green //g
+            pixelImage.data[i + 2] = colour.blue //b
+            pixelImage.data[i + 3] = 255 //aplha
         }
     }
 }
 
+function determineColour(numberIterations) {
+
+    let black = {
+        red : 0,
+        green : 0,
+        blue : 0
+    }
+
+    let colours = [
+        {
+            red : 0,
+            green : 255,
+            blue : 0
+        },
+        {
+            red : 0,
+            green : 255,
+            blue : 255
+        },
+        {
+            red : 0,
+            green : 0,
+            blue : 200
+        },
+    ]
+
+    //YANDERE DEV CODE DETECTED!!!!
+    if (numberIterations === maxIterations) {
+        return black
+    } else {
+        return {
+            red : 0,
+            green : 0,
+            blue : numberIterations/maxIterations * 255
+        }
+    }
+
+
+}
 
 function parseNumber(string) {
     return Number(string.replace('px', ''))
