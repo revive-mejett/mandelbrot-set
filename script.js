@@ -22,7 +22,7 @@ function setup() {
     ctx.ellipse(100,100,50,50,Math.PI/4,0,3*Math.PI/2,false)
     ctx.lineTo(100,100)
     ctx.stroke()
-    document.addEventListener('mousemove', logpos)
+    document.addEventListener('mousemove', drawFromCursor)
     
     
     
@@ -32,31 +32,45 @@ function setup() {
     document.addEventListener('mousedown', toggleClick)
 
     
-
+    setInterval(() => {
+        clearCanvas()
+    }, 5000);
 }
 
-function logpos(evt) {
+function drawFromCursor(evt) {
     if (x <= 5 && !debounce && toggleClicked) {
         debounce = true
-        console.log(evt.screenX)
+        drawCircle(evt.clientX, evt.clientY)
+        
         setTimeout(() => {
             debounce = false
-            drawCircle(evt.screenX, evt.screenY)
+            
         }, 20);
     }
 
 }
 
 function drawCircle(x, y) {
+
     const canvas = document.querySelector('.mandelbrort')
     let ctx = canvas.getContext("2d")
+
+    console.log(`x: ${x} y: ${y}`)
+    console.log(`canvas x: ${canvas} canvas y: ${canvas.screenY}`)
+    console.log(canvas)
     ctx.moveTo(x,y)
-    ctx.ellipse(x,y,50,50,Math.PI/4,0,3*Math.PI/2,false)
-    ctx.lineTo(x,y)
+    // ctx.ellipse(x,y,50,50,Math.PI/4,0,3*Math.PI/2,false)
+    ctx.beginPath()
+    ctx.arc(x, y, 40, 0, 2 * Math.PI);
     ctx.stroke()
-    document.addEventListener('mousemove', logpos)
+    document.addEventListener('mousemove', drawFromCursor)
 }
 
 function toggleClick() {
     toggleClicked = !toggleClicked;
+}
+
+function clearCanvas() {
+    const canvas = document.querySelector('.mandelbrort')
+    let ctx = canvas.getContext("2d")
 }
