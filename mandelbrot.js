@@ -11,8 +11,11 @@ let colourHue = 0;
 
 
 // the width of a unit square.
-const imageWidth = 10
+const imageWidth = 2
 const maxIterations = 20
+const canvasWidth = 1000
+const canvasHeight = 1000
+const zoom = 200
 let coordinateOffsetX
 let coordinateOffsetI
 
@@ -62,8 +65,8 @@ function setup() {
     const canvas = document.createElement('canvas')
 
     canvas.setAttribute('class', 'mandelbrort')
-    canvas.setAttribute('height', '500px')
-    canvas.setAttribute('width', '500px')
+    canvas.setAttribute('height', `${canvasHeight}px`)
+    canvas.setAttribute('width', `${canvasWidth}px`)
     coordinateOffsetX = parseNumber(canvas.getAttribute('width'))/2
     coordinateOffsetI = parseNumber(canvas.getAttribute('height'))/2
 
@@ -198,7 +201,7 @@ function parseNumber(string) {
  * @returns {number}
  */
 function convertToXCoordinate(xCanvasPos) {
-    let converted = (xCanvasPos - coordinateOffsetX) / 100
+    let converted = (xCanvasPos - coordinateOffsetX) / zoom
     return converted
 }
 
@@ -208,7 +211,7 @@ function convertToXCoordinate(xCanvasPos) {
  * @returns {number}
  */
 function convertToICoordinate(yCanvasPos) {
-    let converted = (yCanvasPos - coordinateOffsetI) / 100
+    let converted = (yCanvasPos - coordinateOffsetI) / zoom
     return converted
 }
 
