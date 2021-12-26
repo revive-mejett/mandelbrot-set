@@ -111,7 +111,7 @@ function mandelbrotEquation(coordinate, constant, iteration) {
 
     //if the coordinate numbers expand into infinity, return the iteration and its said to be not in the mandelbrot set
     //if this function has been called 20 times, return 20 as it is inside the mandelbrot set.
-    if (coordinate.magnitude() > 2 || iteration >= maxIterations) {
+    if (coordinate.x > maxCoordinateValue || coordinate.i > maxCoordinateValue || iteration >= maxIterations) {
         return iteration
     }
 
