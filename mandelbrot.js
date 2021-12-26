@@ -54,12 +54,22 @@ function setup() {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowRight') {
             console.log('sova')
-            panX += 0.1/magnification * panXmultiplier
+            panX += panXmultiplier/magnification
             reRenderKey()
         }
         if (e.key === 'ArrowLeft') {
             console.log('killjoy')
-            panX -= 0.1/magnification * panImultiplier
+            panX -= panXmultiplier/magnification
+            reRenderKey()
+        }
+        if (e.key === 'ArrowUp') {
+            console.log('raze')
+            panI -= panImultiplier/magnification
+            reRenderKey()
+        }
+        if (e.key === 'ArrowDown') {
+            console.log('omen')
+            panI += panImultiplier/magnification
             reRenderKey()
         }
     })
@@ -100,8 +110,8 @@ function reRender(e) {
     console.log('magnification ' + magnification)
     console.log('zoom multiplier input ' + zoomInputValue)
     console.log('current zoom ' + zoom)
-    panX += Number(panXInputValue)*magnification
-    panI += Number(panIInputValue)*magnification
+    // panX += Number(panXInputValue)*magnification
+    // panI += Number(panIInputValue)*magnification
     ctx.clearRect(0, 0, canvas.width, canvas.height) //remove the previous content of the canvas
     setTimeout(() => {
         drawFullImage()
@@ -111,11 +121,14 @@ function reRender(e) {
 
 function updatePanMultiplierValues() {
     
-    const panXInputValue = document.querySelector('#pan-x').value
-    const panIInputValue = document.querySelector('#pan-i').value
-    document.querySelector('#pan-x-display').textContent = panXInputValue
-    document.querySelector('#pan-i-display').textContent = panIInputValue
-    
+    const panXmultiplierInput = document.querySelector('#pan-x').value
+    const panImultiplierInput = document.querySelector('#pan-i').value
+    document.querySelector('#pan-x-display').textContent = panXmultiplierInput
+    document.querySelector('#pan-i-display').textContent = panImultiplierInput
+    console.log(panXmultiplierInput)
+    console.log(panImultiplierInput)
+    panXmultiplier = panXmultiplierInput
+    panImultiplier = panImultiplierInput
 
 }
 
