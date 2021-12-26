@@ -27,14 +27,21 @@ let zoom = 100
 let panX = 0
 let panI = 0
 
+//startXRange
+let startX = -2
+let startI = 2
+let endX = 2
+let endI = -2
+let currentX = -2
+let currentI = 2
 function setup() {
     const canvas = document.createElement('canvas')
 
     canvas.setAttribute('class', 'mandelbrot')
     canvas.setAttribute('height', `${canvasHeight}px`)
     canvas.setAttribute('width', `${canvasWidth}px`)
-    coordinateOffsetX = parseNumber(canvas.getAttribute('width'))/2
-    coordinateOffsetI = parseNumber(canvas.getAttribute('height'))/2
+    coordinateOffsetX = -parseNumber(canvas.getAttribute('width'))/2
+    coordinateOffsetI = -parseNumber(canvas.getAttribute('height'))/2
 
     document.querySelector('#canvas-section').appendChild(canvas)
     console.log('phoenix loves jett')
@@ -50,13 +57,20 @@ function setup() {
 
 
     drawFullImage()
-    
+    canvas.addEventListener('dblclick', zoomIn)
+}
 
+function zoomIn(e) {
+    const canvas = document.querySelector('.mandelbrot')
+    let ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, canvas.width, canvas.height) //remove the previous content of the canvas
+    setTimeout(() => {
+        drawFullImage()
+    }, 200);
 }
 
 function reRender(e) {
     e.preventDefault()
-    console.log('sova and phoenix');
     const canvas = document.querySelector('.mandelbrot')
     let ctx = canvas.getContext('2d')
     ctx.clearRect(0, 0, canvas.width, canvas.height) //remove the previous content of the canvas
@@ -118,17 +132,18 @@ function drawFullImage() {
     
     //colour all the rows in a loop
     for (row = 0; row < parseNumber(canvas.getAttribute('height')); row+=imageWidth) {
+        currentX = startX
         colourRow()
+        currentI-= Math.abs(endI-startI)/canvasHeight
+        
     }
-    
-    
-    
     
     //colour a full row.
     function colourRow() {
         for (column = 0; column < parseNumber(canvas.getAttribute('width')); column += imageWidth) {
             //color the single pixel (or the square if each unit > 1 pixel)
             colourSquare()
+            currentX+= Math.abs(endX-startX)/canvasWidth
             ctx.putImageData(pixelImage, column, row)
         }
     }
@@ -137,7 +152,10 @@ function drawFullImage() {
     function colourSquare() {
         pixelImage = ctx.createImageData(imageWidth, imageWidth)
         // get a coordinate based on the position of this square
-        let currentCoordinate = new Coordinate(convertToXCoordinate(column), convertToICoordinate(row))
+        //might need to change
+        // let currentCoordinate = new Coordinate(convertToXCoordinate(column), convertToICoordinate(row))
+        console.log(currentX + ', ' + currentI)
+        let currentCoordinate = new Coordinate(currentX, currentI)
         let colour = determineColour(determineIterations(currentCoordinate))
 
         for (let i = 0; i < pixelImage.data.length; i += 4) {
@@ -146,6 +164,7 @@ function drawFullImage() {
             pixelImage.data[i + 2] = colour.blue //b
             pixelImage.data[i + 3] = 255 //aplha
         }
+        
     }
 }
 
@@ -198,7 +217,7 @@ function parseNumber(string) {
  * @returns {number}
  */
 function convertToXCoordinate(xCanvasPos) {
-    let converted = ((xCanvasPos - coordinateOffsetX) / zoom)  + panX*2/zoom
+    let converted = ((xCanvasPos + coordinateOffsetX + panX) / zoom)
     return converted
 }
 
@@ -208,7 +227,7 @@ function convertToXCoordinate(xCanvasPos) {
  * @returns {number}
  */
 function convertToICoordinate(yCanvasPos) {
-    let converted = ((yCanvasPos - coordinateOffsetI) / zoom) + panI*2/zoom
+    let converted = ((yCanvasPos + coordinateOffsetI + panI) / zoom)
     return converted
 }
 
