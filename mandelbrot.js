@@ -13,7 +13,7 @@ let colourHue = 0;
 
 
 // the width of a unit square.
-const imageWidth = 1
+const imageWidth = 4
 const maxIterations = 400
 const maxCoordinateValue = 1000
 const canvasWidth = 400
@@ -24,8 +24,11 @@ let coordinateOffsetI
 
 //will be the controls
 let zoom = 100
+let magnification = 1
 let panX = 0
 let panI = 0
+let panXmultiplier = 1
+let panImultiplier = 1
 
 function setup() {
     const canvas = document.createElement('canvas')
@@ -40,25 +43,37 @@ function setup() {
     console.log('phoenix loves jett')
 
     //input sliders
-    document.querySelector('#pan-x').addEventListener('change', updatePanValues)
-    document.querySelector('#pan-i').addEventListener('change', updatePanValues)
+    document.querySelector('#pan-x').addEventListener('change', updatePanMultiplierValues)
+    document.querySelector('#pan-i').addEventListener('change', updatePanMultiplierValues)
 
     //zoom value
     document.querySelector('#zoom').addEventListener('change', updateZoomValue)
     document.querySelector('#re-render').addEventListener('click', reRender)
     
-
-
+ 
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+            console.log('sova')
+            panX += 0.1/magnification * panXmultiplier
+            reRenderKey()
+        }
+        if (e.key === 'ArrowLeft') {
+            console.log('killjoy')
+            panX -= 0.1/magnification * panImultiplier
+            reRenderKey()
+        }
+    })
     drawFullImage()
     
 
 }
 
-function reRender(e) {
-    e.preventDefault()
-    console.log('sova and phoenix');
+function reRenderKey() {
+    console.log('sova and phoenix2');
     const canvas = document.querySelector('.mandelbrot')
     let ctx = canvas.getContext('2d')
+    console.log('current pan x rerender ' + panX)
+    console.log('current pan i rerender ' + panI)
     ctx.clearRect(0, 0, canvas.width, canvas.height) //remove the previous content of the canvas
     setTimeout(() => {
         drawFullImage()
@@ -66,22 +81,47 @@ function reRender(e) {
 
 }
 
-function updatePanValues() {
+function reRender(e) {
+    e.preventDefault()
+    console.log('sova and phoenix');
+    const canvas = document.querySelector('.mandelbrot')
+    let panXInputValue = document.querySelector('#pan-x').value
+    let panIInputValue = document.querySelector('#pan-i').value
+    let zoomInputValue = document.querySelector('#zoom').value
+
+    let ctx = canvas.getContext('2d')
+    //update panx/pan i values
+    //update the global variable to be used for rerendering
+    magnification *= zoomInputValue
+    console.log('current zoom ' + zoom)
+    zoom *= zoomInputValue
+    console.log('current pan x rerender ' + panX)
+    console.log('current pan i rerender ' + panI)
+    console.log('magnification ' + magnification)
+    console.log('zoom multiplier input ' + zoomInputValue)
+    console.log('current zoom ' + zoom)
+    panX += Number(panXInputValue)*magnification
+    panI += Number(panIInputValue)*magnification
+    ctx.clearRect(0, 0, canvas.width, canvas.height) //remove the previous content of the canvas
+    setTimeout(() => {
+        drawFullImage()
+    }, 200);
+
+}
+
+function updatePanMultiplierValues() {
     
     const panXInputValue = document.querySelector('#pan-x').value
     const panIInputValue = document.querySelector('#pan-i').value
     document.querySelector('#pan-x-display').textContent = panXInputValue
     document.querySelector('#pan-i-display').textContent = panIInputValue
-    //update the global variable to be used for rerendering
-    panX = panXInputValue 
-    panI = panIInputValue 
+    
 
 }
 
 function updateZoomValue() {
     const zoomInputValue = document.querySelector('#zoom').value
     //update the global variable to be used for rerendering
-    zoom = zoomInputValue
 }
 
 //determine how many steps it takes for a coordinate to blow up, otherwise 20 for coords in the mandelbrot set
@@ -198,7 +238,7 @@ function parseNumber(string) {
  * @returns {number}
  */
 function convertToXCoordinate(xCanvasPos) {
-    let converted = ((xCanvasPos - coordinateOffsetX) / zoom)  + panX*2/zoom
+    let converted = ((xCanvasPos - coordinateOffsetX) / zoom) + panX
     return converted
 }
 
@@ -208,7 +248,7 @@ function convertToXCoordinate(xCanvasPos) {
  * @returns {number}
  */
 function convertToICoordinate(yCanvasPos) {
-    let converted = ((yCanvasPos - coordinateOffsetI) / zoom) + panI*2/zoom
+    let converted = ((yCanvasPos - coordinateOffsetI) / zoom) + panI
     return converted
 }
 
