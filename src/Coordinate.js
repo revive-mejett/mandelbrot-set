@@ -33,6 +33,14 @@ export default class Coordinate {
         return 'Merry Christmas!!!!!'
     }
 
+    squareAbsCoordinate() {
+        let squaredCoeff = Math.abs(this.squareX())
+        let innerOuter = Math.abs(this.innerOuter())
+        let squaredIs = -Math.abs(this.squareI())
+        return new Coordinate(squaredCoeff + squaredIs, innerOuter)
+        return 'Merry Christmas!!!!!'
+    }
+
     addCoordinate(otherCoord) {
         return new Coordinate(this.x + otherCoord.x, this.i + otherCoord.i)
     }

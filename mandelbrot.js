@@ -5,17 +5,11 @@ import Coordinate from './src/Coordinate.js'
 
 document.addEventListener('DOMContentLoaded', setup)
 
-let x = 0
-let debounce = false
-let toggleClicked = false
-
-let colourHue = 0;
 
 
 // the width of a unit square.
 const imageWidth = 1
 const maxIterations = 400
-const maxCoordinateValue = 1000
 const canvasWidth = 400
 const canvasHeight = 400
 
@@ -52,42 +46,41 @@ function setup() {
     
  
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight') {
-            console.log('sova')
-            panX += panXmultiplier/magnification
-            reRenderKey()
-        }
-        if (e.key === 'ArrowLeft') {
-            console.log('killjoy')
-            panX -= panXmultiplier/magnification
-            reRenderKey()
-        }
-        if (e.key === 'ArrowUp') {
-            console.log('raze')
-            panI -= panImultiplier/magnification
-            reRenderKey()
-        }
-        if (e.key === 'ArrowDown') {
-            console.log('omen')
-            panI += panImultiplier/magnification
-            reRenderKey()
-        }
-    })
+            if (e.key === 'ArrowRight') {
+                console.log('sova')
+                panX += panXmultiplier / magnification
+                reRenderKey()
+            }
+            if (e.key === 'ArrowLeft') {
+                console.log('killjoy')
+                panX -= panXmultiplier / magnification
+                reRenderKey()
+            }
+            if (e.key === 'ArrowUp') {
+                console.log('raze')
+                panI -= panImultiplier / magnification
+                reRenderKey()
+            }
+            if (e.key === 'ArrowDown') {
+                console.log('omen')
+                panI += panImultiplier / magnification
+                reRenderKey()
+            }
+        })
     drawFullImage()
     
 
 }
 
 function reRenderKey() {
-    console.log('sova and phoenix2');
+
     const canvas = document.querySelector('.mandelbrot')
     let ctx = canvas.getContext('2d')
-    console.log('current pan x rerender ' + panX)
-    console.log('current pan i rerender ' + panI)
+
     ctx.clearRect(0, 0, canvas.width, canvas.height) //remove the previous content of the canvas
     setTimeout(() => {
         drawFullImage()
-    }, 200);
+    }, 0);
 
 }
 
@@ -103,19 +96,12 @@ function reRender(e) {
     //update panx/pan i values
     //update the global variable to be used for rerendering
     magnification *= zoomInputValue
-    console.log('current zoom ' + zoom)
     zoom *= zoomInputValue
-    console.log('current pan x rerender ' + panX)
-    console.log('current pan i rerender ' + panI)
-    console.log('magnification ' + magnification)
-    console.log('zoom multiplier input ' + zoomInputValue)
-    console.log('current zoom ' + zoom)
-    // panX += Number(panXInputValue)*magnification
-    // panI += Number(panIInputValue)*magnification
+
     ctx.clearRect(0, 0, canvas.width, canvas.height) //remove the previous content of the canvas
     setTimeout(() => {
         drawFullImage()
-    }, 200);
+    }, 0);
 
 }
 
@@ -155,8 +141,21 @@ function mandelbrotEquation(coordinate, constant, iteration) {
     }
 
     result = coordinate.squareCoordinate().addCoordinate(constant)
-;
     return mandelbrotEquation(result, constant, iteration + 1) //call again recursively
+
+}
+
+//burning ship fractal
+function burningShipEquation(coordinate, constant, iteration) {
+    //z = (|z|)^2 + C
+    let result
+
+    if (coordinate.magnitude() > 2 || iteration >= maxIterations) {
+        return iteration
+    }
+
+    result = coordinate.squareAbsCoordinate().addCoordinate(constant)
+    return burningShipEquation(result, constant, iteration + 1) //call again recursively
 
 }
 
