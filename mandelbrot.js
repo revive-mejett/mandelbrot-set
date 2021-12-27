@@ -13,7 +13,7 @@ let colourHue = 0;
 
 
 // the width of a unit square.
-const imageWidth = 4
+const imageWidth = 1
 const maxIterations = 400
 const maxCoordinateValue = 1000
 const canvasWidth = 400
@@ -209,6 +209,14 @@ function drawFullImage() {
  */
 function determineColour(numberIterations) {
 
+    let iterationLowerBound;
+    let iterationRangeSize;
+
+    const navyToBlueBound = 30;
+    const cyanBound = 60;
+    const greenBound = 100;
+    const yellowBound = 200;
+    const redBound = 300;
     let black = {
         red : 0,
         green : 0,
@@ -218,23 +226,57 @@ function determineColour(numberIterations) {
     //YANDERE DEV CODE DETECTED!!!!
     if (numberIterations === maxIterations) {
         return black
-    } else if (numberIterations >= (maxIterations - 330)) {
+    } else if (numberIterations >= (maxIterations - 200)) {
+
+        iterationLowerBound = yellowBound //200
+        iterationRangeSize = redBound - yellowBound //100
+        //from green to yellow to red (200 to 300 iterations)
         return {
-            red : numberIterations/(maxIterations - 330) * 255,
-            green : (255 - numberIterations)/(maxIterations - 330) * 255,
+            //red : numberIterations/(maxIterations - 330) * 255,
+            red : 255,
+            green : (iterationRangeSize - (numberIterations - iterationLowerBound))/iterationRangeSize * 255,
             blue : 0
         }
+    } else if (numberIterations >= (maxIterations - 300)) {
+
+        iterationLowerBound = greenBound //100
+        iterationRangeSize = yellowBound - greenBound //100
+        //from green to yellow (100 to 200 iterations)
+        return {
+            //red : numberIterations/(maxIterations - 330) * 255,
+            red : (iterationRangeSize - (numberIterations - iterationLowerBound))/iterationRangeSize * 255,
+            green : 255,
+            blue : 0
+        }
+    } else if (numberIterations >= (maxIterations - 340)) {
+
+        iterationLowerBound = cyanBound //60
+        iterationRangeSize = greenBound - cyanBound // 40
+        //from cyan to green (61 to 100 iterations)
+        return {
+            //red : numberIterations/(maxIterations - 330) * 255,
+            red : 0,
+            green : 255,
+            blue : (iterationRangeSize - (numberIterations - iterationLowerBound))/iterationRangeSize * 255
+        }
     } else if (numberIterations >= (maxIterations - 370)) {
+
+        //from blue to cyan (31 to 60 iterations)
+        iterationLowerBound = navyToBlueBound
+        iterationRangeSize = maxIterations - (maxIterations - iterationLowerBound)
         return {
             red : 0,
-            green : numberIterations/(maxIterations - 370) * 255,
+            green : (numberIterations - iterationLowerBound)/iterationRangeSize * 255,
             blue : 255
         }
     } else {
+        //from navy blue to blue (0 to 30 max iterations)
+        iterationLowerBound = navyToBlueBound;
+        iterationRangeSize = maxIterations - (maxIterations - iterationLowerBound)
         return {
             red : 0,
             green : 0,
-            blue : numberIterations/(maxIterations - 370) * 200
+            blue : numberIterations/iterationRangeSize * 255
         }
     }
 
