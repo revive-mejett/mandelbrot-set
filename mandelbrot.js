@@ -161,8 +161,6 @@ function burningShipEquation(coordinate, constant, iteration) {
 
 function drawFullImage() {
     const canvas = document.querySelector('.mandelbrot')
-
-
     let ctx = canvas.getContext('2d')
     let pixelImage
     let column
@@ -172,9 +170,6 @@ function drawFullImage() {
     for (row = 0; row < parseNumber(canvas.getAttribute('height')); row+=imageWidth) {
         colourRow()
     }
-    
-    
-    
     
     //colour a full row.
     function colourRow() {
@@ -229,7 +224,7 @@ function determineColour(numberIterations) {
 
         iterationLowerBound = yellowBound //200
         iterationRangeSize = redBound - yellowBound //100
-        //from green to yellow to red (200 to 300 iterations)
+        //from yellow to red (200 to 300 iterations)
         return {
             //red : numberIterations/(maxIterations - 330) * 255,
             red : 255,
@@ -240,10 +235,10 @@ function determineColour(numberIterations) {
 
         iterationLowerBound = greenBound //100
         iterationRangeSize = yellowBound - greenBound //100
-        //from green to yellow (100 to 200 iterations)
+        //from green to yellow (101 to 200 iterations)
         return {
             //red : numberIterations/(maxIterations - 330) * 255,
-            red : (iterationRangeSize - (numberIterations - iterationLowerBound))/iterationRangeSize * 255,
+            red : (numberIterations - iterationLowerBound)/iterationRangeSize * 255,
             green : 255,
             blue : 0
         }
