@@ -17,7 +17,7 @@ let coordinateOffsetX
 let coordinateOffsetI
 
 //will be the controls
-let zoom = 100
+let zoom = canvasWidth/4
 let magnification = 1
 let panX = 0
 let panI = 0
@@ -211,6 +211,7 @@ function determineColour(numberIterations) {
     const greenBound = 100;
     const yellowBound = 200;
     const redBound = 300;
+    const blueBound = 400;
     let black = {
         red : 0,
         green : 0,
@@ -220,13 +221,23 @@ function determineColour(numberIterations) {
     //YANDERE DEV CODE DETECTED!!!!
     if (numberIterations === maxIterations) {
         return black
+        
+    } else if (numberIterations >= (maxIterations - 100)) {
+
+        iterationLowerBound = redBound //300
+        iterationRangeSize = blueBound - redBound //100
+        //from yellow to red (300 to 400 iterations)
+        return {
+            red : (iterationRangeSize - (numberIterations - iterationLowerBound))/iterationRangeSize * 255, //less blue,
+            green : 0,
+            blue : (numberIterations - iterationLowerBound)/iterationRangeSize * 255 //more blue
+        }
     } else if (numberIterations >= (maxIterations - 200)) {
 
         iterationLowerBound = yellowBound //200
         iterationRangeSize = redBound - yellowBound //100
         //from yellow to red (200 to 300 iterations)
         return {
-            //red : numberIterations/(maxIterations - 330) * 255,
             red : 255,
             green : (iterationRangeSize - (numberIterations - iterationLowerBound))/iterationRangeSize * 255,
             blue : 0
