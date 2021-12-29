@@ -30,8 +30,8 @@ function setup() {
     canvas.setAttribute('class', 'mandelbrot')
     canvas.setAttribute('height', `${canvasHeight}px`)
     canvas.setAttribute('width', `${canvasWidth}px`)
-    coordinateOffsetX = parseNumber(canvas.getAttribute('width'))/2
-    coordinateOffsetI = parseNumber(canvas.getAttribute('height'))/2
+    coordinateOffsetX = canvasWidth/2
+    coordinateOffsetI = canvasHeight/2
 
     document.querySelector('#canvas-section').appendChild(canvas)
     console.log('phoenix loves jett')
@@ -41,7 +41,6 @@ function setup() {
     document.querySelector('#pan-i').addEventListener('change', updatePanMultiplierValues)
 
     //zoom value
-    document.querySelector('#zoom').addEventListener('change', updateZoomValue)
     document.querySelector('#re-render').addEventListener('click', reRender)
     
  
@@ -88,8 +87,6 @@ function reRender(e) {
     e.preventDefault()
     console.log('sova and phoenix');
     const canvas = document.querySelector('.mandelbrot')
-    let panXInputValue = document.querySelector('#pan-x').value
-    let panIInputValue = document.querySelector('#pan-i').value
     let zoomInputValue = document.querySelector('#zoom').value
 
     let ctx = canvas.getContext('2d')
@@ -118,10 +115,6 @@ function updatePanMultiplierValues() {
 
 }
 
-function updateZoomValue() {
-    const zoomInputValue = document.querySelector('#zoom').value
-    //update the global variable to be used for rerendering
-}
 
 //determine how many steps it takes for a coordinate to blow up, otherwise 20 for coords in the mandelbrot set
 function determineIterations(coordinate) {
@@ -167,13 +160,13 @@ function drawFullImage() {
     let row
     
     //colour all the rows in a loop
-    for (row = 0; row < parseNumber(canvas.getAttribute('height')); row+=imageWidth) {
+    for (row = 0; row < canvasHeight; row+=imageWidth) {
         colourRow()
     }
     
     //colour a full row.
     function colourRow() {
-        for (column = 0; column < parseNumber(canvas.getAttribute('width')); column += imageWidth) {
+        for (column = 0; column < canvasWidth; column += imageWidth) {
             //color the single pixel (or the square if each unit > 1 pixel)
             colourSquare()
             ctx.putImageData(pixelImage, column, row)
