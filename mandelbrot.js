@@ -3,10 +3,9 @@ import Coordinate from './src/Coordinate.js'
 
 // the width of a unit square.
 const imageWidth = 1
-const maxIterations = 2000
-const canvasWidth = 400
-const canvasHeight = 400
-const cycleMultiplier = 4 //determines the increment of new cycles of colours
+let canvasWidth = 400
+let canvasHeight = 400
+const cycleMultiplier = 2 //determines the increment of new cycles of colours
 
 document.addEventListener('DOMContentLoaded', setup)
 
@@ -22,6 +21,9 @@ let panX = 0
 let panI = 0
 let panXmultiplier = 1
 let panImultiplier = 1
+
+//MAX ITERATIONS -- PERFORMANCE COST
+let maxIterations = 500
 
 function setup() {
     const canvas = document.createElement('canvas')
@@ -62,7 +64,7 @@ function setup() {
             }
         })
     drawFullImage()
-    console.log(determineColour(450))
+    // console.log(determineColour(760))
     
 
 }
@@ -83,7 +85,10 @@ function reRender(e) {
     e.preventDefault()
     const canvas = document.querySelector('.mandelbrot')
     let zoomInputValue = document.querySelector('#zoom').value
-
+    if (zoomInputValue == 0) {
+        console.log('Cannot be 0')
+        return
+    }
     let ctx = canvas.getContext('2d')
     //update panx/pan i values
     //update the global variable to be used for rerendering
@@ -111,25 +116,24 @@ function updatePanMultiplierValues() {
 
 //determine how many steps it takes for a coordinate to blow up, otherwise 20 for coords in the mandelbrot set
 function determineIterations(coordinate) {
-    let numberIterations = mandelbrotEquation(new Coordinate(0,0), coordinate, 1);
+    let numberIterations = 0
+    let resultCoordinate = new Coordinate(0,0)
+
+    //loop until the coordinate diverges towards infinity or numberiterations exceeds max
+    while (resultCoordinate.magnitude() < 2 && numberIterations <= maxIterations) {
+        resultCoordinate = mandelbrotEquation(resultCoordinate, coordinate)
+        numberIterations++
+    }
+
     return numberIterations
 }
 
 //calculate a new coordinate based on the formula of the mandelbrot set.
-function mandelbrotEquation(coordinate, constant, iteration) {
+function mandelbrotEquation(coordinate, constant) {
     //Z = (z)^2 + C
-    let result
-
-    //if the coordinate numbers expand into infinity, return the iteration and its said to be not in the mandelbrot set
-    //if this function has been called 20 times, return 20 as it is inside the mandelbrot set.
-    if (coordinate.magnitude() > 2 || iteration >= maxIterations) {
-        return iteration
-    }
-
-    result = coordinate.squareCoordinate().addCoordinate(constant)
-    return mandelbrotEquation(result, constant, iteration + 1) //call again recursively
-
+    return coordinate.squareCoordinate().addCoordinate(constant)
 }
+
 
 //burning ship fractal
 function burningShipEquation(coordinate, constant, iteration) {
@@ -190,21 +194,34 @@ function drawFullImage() {
  * @returns {object} -- JSON object with rgb values
  */
 
-let logged = false
 function determineColour(numberIterations) {
 
 
-    const navyToBlueBound = 30;
-    const cyanBoundPercentage = 0.2;
-    const greenBoundPercentage = 0.4;
-    const yellowBoundPercentage = 0.6;
-    const redBoundPercentage = 0.8;
+    const navyToBlueBound = 20
+    const cyanBoundPercentage = 0.2
+    const greenBoundPercentage = 0.4
+    const yellowBoundPercentage = 0.6
+    const redBoundPercentage = 0.8
 
+    const black = {
+        red : 0,
+        green : 0,
+        blue : 0
+    }
+    //black if number iterations exceed
+    if (numberIterations > maxIterations) {
+        return black
+    }
+    if (numberIterations < 20) {
+        return {
+            red : 0,
+            green : numberIterations/navyToBlueBound*255,
+            blue : numberIterations/navyToBlueBound*255
+        }
+    }
     
-    //for more than 30 iterations, colour them in a rainbow cycle that repeats until max iterations
 
 
-    let prevCycleLowerBound
     let cycleLowerBound = 1
     let cycleRangeSize
     //rainbow cycle repeats after each 10^cycle iterations
@@ -212,21 +229,16 @@ function determineColour(numberIterations) {
         
         let bracketRangeSize
         cycleRangeSize = upperCycleBound-cycleLowerBound //300
-        // console.log('cycle lower: ' +cycleLowerBound)
-        // console.log('cycle upper b: ' +upperCycleBound)
-        // console.log(cycleRangeSize)
-        // console.log('#iterations: ' +numberIterations)
-        // console.log('cyan iterations ' + (cyanBoundPercentage*cycleRangeSize + cycleLowerBound))
-        // console.log('green iterations ' + (greenBoundPercentage*cycleRangeSize + cycleLowerBound))
-        // console.log('yellow iterations ' + (yellowBoundPercentage*cycleRangeSize + cycleLowerBound))
-        // console.log('red iterations ' + (redBoundPercentage*cycleRangeSize + cycleLowerBound))
-        // console.log('blue iterations ' + (upperCycleBound))
+
+        //black if upper cyclebound goes over max
+        if (upperCycleBound > maxIterations) {
+            console.log('cycle overbound');
+            return black
+        }
     
-        
-        //blue to cyan 1-20
+        //blue to cyan
         if (numberIterations >= cycleLowerBound && numberIterations < cyanBoundPercentage*cycleRangeSize + cycleLowerBound) {
             bracketRangeSize = cyanBoundPercentage*cycleRangeSize //60
-            
 
             return {
                 red : 0,
@@ -234,67 +246,51 @@ function determineColour(numberIterations) {
                 blue : 255
             }
         }
-
-            //cyan to green 21-40
+        //cyan to green
         else if (numberIterations >= cyanBoundPercentage*cycleRangeSize + cycleLowerBound && numberIterations < greenBoundPercentage*cycleRangeSize + cycleLowerBound) {
-
             bracketRangeSize = greenBoundPercentage*cycleRangeSize - cyanBoundPercentage*cycleRangeSize
+
             return {
                 red : 0,
                 green : 255,
-                blue : (bracketRangeSize - (numberIterations - cyanBoundPercentage*cycleRangeSize))/bracketRangeSize * 255 // less blue
+                blue : (bracketRangeSize - (numberIterations - cyanBoundPercentage*cycleRangeSize - cycleLowerBound))/bracketRangeSize * 255 // less blue
             }
         }
-
-        //green to yellow 41-60
+        //green to yellow
         else if (numberIterations >= greenBoundPercentage*cycleRangeSize + cycleLowerBound && numberIterations < yellowBoundPercentage*cycleRangeSize + cycleLowerBound) {
-
-
             bracketRangeSize = yellowBoundPercentage*cycleRangeSize - greenBoundPercentage*cycleRangeSize
+
             return {
-                red : (numberIterations - greenBoundPercentage*cycleRangeSize)/bracketRangeSize * 255, // more red
+                red : (numberIterations - greenBoundPercentage*cycleRangeSize - cycleLowerBound)/bracketRangeSize * 255, // more red
                 green : 255,
                 blue : 0
             }
         }
-
-            //yellow to red 61-80
+        //yellow to red
         else if (numberIterations >= yellowBoundPercentage*cycleRangeSize + cycleLowerBound && numberIterations < redBoundPercentage*cycleRangeSize + cycleLowerBound) {
-
-
             bracketRangeSize = redBoundPercentage*cycleRangeSize - yellowBoundPercentage*cycleRangeSize
 
             return {
                 red : 255,
-                green : (bracketRangeSize - (numberIterations - yellowBoundPercentage*cycleRangeSize))/bracketRangeSize * 255, //less green
+                green : (bracketRangeSize - (numberIterations - yellowBoundPercentage*cycleRangeSize - cycleLowerBound))/bracketRangeSize * 255, //less green
                 blue : 0
             }
         }
-
-        //red to blue 81-100
+        //red to blue
         else if (numberIterations >= redBoundPercentage*cycleRangeSize + cycleLowerBound && numberIterations <= upperCycleBound) {
-
-
-            bracketRangeSize = upperCycleBound - redBoundPercentage*cycleRangeSize
+            bracketRangeSize = upperCycleBound - redBoundPercentage*cycleRangeSize - cycleLowerBound
 
             return {
-                red : (bracketRangeSize - (numberIterations - redBoundPercentage*cycleRangeSize))/bracketRangeSize * 255, //less red,
+                red : (bracketRangeSize - (numberIterations - redBoundPercentage*cycleRangeSize  - cycleLowerBound))/bracketRangeSize * 255, //less red,
                 green : 0,
-                blue : (numberIterations - redBoundPercentage*cycleRangeSize)/bracketRangeSize * 255 //more blue
+                blue : (numberIterations - redBoundPercentage*cycleRangeSize  - cycleLowerBound)/bracketRangeSize * 255 //more blue
             }
         }
-
         else {
             cycleLowerBound = upperCycleBound //move to next cycle
         }
     }
-
-    //return black if over max iterations
-    return {
-        red : 0,
-        green : 0,
-        blue : 0
-    }
+    return black
 
 }
 /**

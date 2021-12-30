@@ -27,7 +27,7 @@ button {
 }
 
 
-button:invalid {
+input:invalid {
     background-color: rgb(211, 99, 151);
 }
 
