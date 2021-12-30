@@ -2,9 +2,9 @@
 import Coordinate from './src/Coordinate.js'
 
 // the width of a unit square.
-const imageWidth = 1
-let canvasWidth = 400
-let canvasHeight = 400
+const imageWidth = 8
+let canvasWidth = 800
+let canvasHeight = 800
 const cycleMultiplier = 2 //determines the increment of new cycles of colours
 
 document.addEventListener('DOMContentLoaded', setup)
@@ -15,7 +15,7 @@ let coordinateOffsetX
 let coordinateOffsetI
 
 //will be the controls
-let zoom = canvasWidth/4
+let zoom = canvasWidth/8
 let magnification = 1
 let panX = 0
 let panI = 0
@@ -23,7 +23,7 @@ let panXmultiplier = 1
 let panImultiplier = 1
 
 //MAX ITERATIONS -- PERFORMANCE COST
-let maxIterations = 500
+let maxIterations = 1000
 
 function setup() {
     const canvas = document.createElement('canvas')
@@ -41,25 +41,36 @@ function setup() {
     document.querySelector('#pan-x').addEventListener('change', updatePanMultiplierValues)
     document.querySelector('#pan-i').addEventListener('change', updatePanMultiplierValues)
 
-    //zoom value
-    document.querySelector('#re-render').addEventListener('click', reRender)
     
- 
+
     document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') {
+
+            let zoomInputValue = document.querySelector('#zoom').value
+            if (e.key === 'D' || e.key === 'd') {
                 panX += panXmultiplier / magnification
                 reRenderKey()
             }
-            if (e.key === 'ArrowLeft') {
+            if ((e.key === 'A' || e.key === 'a')) {
                 panX -= panXmultiplier / magnification
                 reRenderKey()
             }
-            if (e.key === 'ArrowUp') {
+            if ((e.key === 'W' || e.key === 'w')) {
                 panI -= panImultiplier / magnification
                 reRenderKey()
             }
-            if (e.key === 'ArrowDown') {
+            if (e.key === 'S' || e.key === 's') {
+
                 panI += panImultiplier / magnification
+                reRenderKey()
+            }
+            if (e.key === 'R' || e.key === 'r') {
+                magnification *= zoomInputValue
+                zoom *= zoomInputValue
+                reRenderKey()
+            }
+            if (e.key === 'F' || e.key === 'f') {
+                magnification /= zoomInputValue
+                zoom /= zoomInputValue
                 reRenderKey()
             }
         })
@@ -70,37 +81,17 @@ function setup() {
 }
 
 function reRenderKey() {
-
     const canvas = document.querySelector('.mandelbrot')
     let ctx = canvas.getContext('2d')
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height) //remove the previous content of the canvas
+    // ctx.clearRect(0, 0, canvas.width, canvas.height) //remove the previous content of the canvas
     setTimeout(() => {
         drawFullImage()
     }, 0);
 
 }
 
-function reRender(e) {
-    e.preventDefault()
-    const canvas = document.querySelector('.mandelbrot')
-    let zoomInputValue = document.querySelector('#zoom').value
-    if (zoomInputValue == 0) {
-        console.log('Cannot be 0')
-        return
-    }
-    let ctx = canvas.getContext('2d')
-    //update panx/pan i values
-    //update the global variable to be used for rerendering
-    magnification *= zoomInputValue
-    zoom *= zoomInputValue
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height) //remove the previous content of the canvas
-    setTimeout(() => {
-        drawFullImage()
-    }, 0);
-
-}
 
 function updatePanMultiplierValues() {
     
