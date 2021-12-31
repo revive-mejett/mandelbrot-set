@@ -1,21 +1,21 @@
 'use strict'
 import Coordinate from './src/Coordinate.js'
 
-// the width of a unit square.
-const imageWidth = 8
-let canvasWidth = 800
-let canvasHeight = 800
+
+let canvasWidth = 600
+let canvasHeight = 600
 const cycleMultiplier = 2 //determines the increment of new cycles of colours
 
 document.addEventListener('DOMContentLoaded', setup)
 
-
+//message panel
+let messagePanel
 
 let coordinateOffsetX
 let coordinateOffsetI
 
 //will be the controls
-let zoom = canvasWidth/8
+let zoom = canvasWidth/4
 let magnification = 1
 let panX = 0
 let panI = 0
@@ -23,11 +23,17 @@ let panXmultiplier = 1
 let panImultiplier = 1
 
 //MAX ITERATIONS -- PERFORMANCE COST
-let maxIterations = 1000
+let maxIterations = 400
+
+// the width of a unit square.
+let imageWidth = 4
+
+// whether full render is enabled or now
+let fullRenderEnabled
 
 function setup() {
     const canvas = document.createElement('canvas')
-
+    messagePanel = document.querySelector('#message-panel')
     canvas.setAttribute('class', 'mandelbrot')
     canvas.setAttribute('height', `${canvasHeight}px`)
     canvas.setAttribute('width', `${canvasWidth}px`)
@@ -41,60 +47,113 @@ function setup() {
     document.querySelector('#pan-x').addEventListener('change', updatePanMultiplierValues)
     document.querySelector('#pan-i').addEventListener('change', updatePanMultiplierValues)
 
+    //full rendercheckbox change handler
+    document.querySelector('#full-render').addEventListener('change', fullRenderChange)
     
+    //max iterations value
+    document.querySelector('#max-iterations').value = maxIterations //initial default
+    document.querySelector('#max-iterations').addEventListener('change', updateMaxIterationsValue)
+
+    //zoom value validation check
+    document.querySelector('#zoom').addEventListener('change', validateZoomInput)
 
     document.addEventListener('keydown', (e) => {
+        messagePanel.textContent = ''
+        let validInputs = true
+        let zoomInputValue = document.querySelector('#zoom').value
+        if (fullRenderEnabled) {
+            messagePanel.textContent += '--Full render must be toggled off to pan/zoom  '
+            validInputs = false
+        }
+        if (zoomInputValue <= 0) {
+            messagePanel.textContent += '--Zoom multiplier must be positive  '
+            validInputs = false
+        }
 
-            let zoomInputValue = document.querySelector('#zoom').value
-            if (e.key === 'D' || e.key === 'd') {
-                panX += panXmultiplier / magnification
-                reRenderKey()
-            }
-            if ((e.key === 'A' || e.key === 'a')) {
-                panX -= panXmultiplier / magnification
-                reRenderKey()
-            }
-            if ((e.key === 'W' || e.key === 'w')) {
-                panI -= panImultiplier / magnification
-                reRenderKey()
-            }
-            if (e.key === 'S' || e.key === 's') {
+        if (maxIterations > 100000 || maxIterations < 1) {
+            messagePanel.textContent += '--Range of Max Iterations must be 1 to 100000  '
+            validInputs = false
+        }
+        if (!validInputs) {
+            return
+        }
+        messagePanel.textContent = ''
+        if (e.key === 'D' || e.key === 'd') {
+            panX += panXmultiplier / magnification
+            reRenderKey()
+        }
+        if ((e.key === 'A' || e.key === 'a')) {
+            panX -= panXmultiplier / magnification
+            reRenderKey()
+        }
+        if ((e.key === 'W' || e.key === 'w')) {
+            panI -= panImultiplier / magnification
+            reRenderKey()
+        }
+        if (e.key === 'S' || e.key === 's') {
 
-                panI += panImultiplier / magnification
-                reRenderKey()
-            }
-            if (e.key === 'R' || e.key === 'r') {
-                magnification *= zoomInputValue
-                zoom *= zoomInputValue
-                reRenderKey()
-            }
-            if (e.key === 'F' || e.key === 'f') {
-                magnification /= zoomInputValue
-                zoom /= zoomInputValue
-                reRenderKey()
-            }
-        })
+            panI += panImultiplier / magnification
+            reRenderKey()
+        }
+        if (e.key === 'R' || e.key === 'r') {
+            magnification *= zoomInputValue
+            zoom *= zoomInputValue
+            reRenderKey()
+        }
+        if (e.key === 'F' || e.key === 'f') {
+            magnification /= zoomInputValue
+            zoom /= zoomInputValue
+            reRenderKey()
+        }
+    })
     drawFullImage()
-    // console.log(determineColour(760))
+    updateImageInfo()
     
 
 }
 
+/**
+ * reRender function that is called after a key input (zoom in, panning)
+ */
 function reRenderKey() {
     const canvas = document.querySelector('.mandelbrot')
     let ctx = canvas.getContext('2d')
 
-    // ctx.clearRect(0, 0, canvas.width, canvas.height) //remove the previous content of the canvas
     setTimeout(() => {
         drawFullImage()
     }, 0);
-
+    updateImageInfo()
 }
 
+/**
+ * reRender function that is called when toggling full render mode change
+ */
+function fullRenderChange() {
+    const canvas = document.querySelector('.mandelbrot')
+    let ctx = canvas.getContext('2d')
+    fullRenderEnabled = document.querySelector('#full-render').checked
+    imageWidth = (fullRenderEnabled ? 1 : 8)
 
-
-function updatePanMultiplierValues() {
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight)
     
+    setTimeout(() => {
+        drawFullImage()
+    }, 0);
+    updateImageInfo()
+}
+
+function updateImageInfo() {
+    console.log(document.querySelector('#max-iteration-display'));
+    console.log(document.querySelector('#max-iteration-display'));
+    console.log(document.querySelector('#zoom-display'));
+    document.querySelector('#max-iteration-display').textContent = `Max iterations: ${maxIterations}`
+    document.querySelector('#zoom-display').textContent = `Current Zoom: ${zoom}`
+
+    document.querySelector('#position-display').textContent = `View Position: X: ${panX} I: ${panI}`
+
+
+}
+function updatePanMultiplierValues() {
     const panXmultiplierInput = document.querySelector('#pan-x').value
     const panImultiplierInput = document.querySelector('#pan-i').value
     document.querySelector('#pan-x-display').textContent = panXmultiplierInput
@@ -104,6 +163,30 @@ function updatePanMultiplierValues() {
 
 }
 
+function updateMaxIterationsValue() {
+    maxIterations = document.querySelector('#max-iterations').value
+
+    if (maxIterations > 10000) {
+        messagePanel.textContent = '--Performance will slow down the greater the number of iterations  '
+    }
+
+    if (maxIterations > 100000 || maxIterations < 1) {
+        messagePanel.textContent += '--Range of Max Iterations must be 1 to 100000  '
+        document.querySelector('.checkbox-container').style.display='none'
+    } else {
+        document.querySelector('.checkbox-container').style.display='block'
+    }
+}
+
+function validateZoomInput() {
+    if (document.querySelector('#zoom').value <= 0) {
+        messagePanel.textContent = '--Zoom multiplier must be positive  '
+        document.querySelector('.checkbox-container').style.display='none'
+        
+    } else {
+        document.querySelector('.checkbox-container').style.display='block'
+    }
+}
 
 //determine how many steps it takes for a coordinate to blow up, otherwise 20 for coords in the mandelbrot set
 function determineIterations(coordinate) {

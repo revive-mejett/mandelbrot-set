@@ -1,6 +1,4 @@
-.mandelbrot {
-    border: 1px black dashed;
-}
+
 
 body {
     background-color: rgb(21, 11, 26);
@@ -10,9 +8,67 @@ body * {
     color: white;
 }
 
-.toolbar > * {
-    border: 2px dashed rgb(0, 255, 255);
+a {
+    color: rgb(255, 0, 191);
+}
+
+.mandelbrot {
+    border: 1px black dashed;
+}
+
+/*flexbox styles*/
+.flex-container {
+    display: flex;
+    border: 2px solid rgb(0, 255, 255);
+    background-color: black;
+}
+
+.flex-item {
+    margin: 0.2rem;
     padding: 0.5rem;
+    border: 2px dashed rgb(0, 255, 255);
+    padding: 0.4 rem;
+}
+
+
+.item1 {
+    min-width: 300px;
+    background-color: rgb(23, 61, 59);
+}
+
+.item2 {
+    min-width: 300px;
+    background-color: rgb(23, 36, 61);
+}
+
+.item3 {
+    min-width: 200px;
+    background-color: rgb(31, 23, 61);
+}
+
+.item4 {
+    min-width: 700px;
+    background-color: rgb(49, 23, 61);
+}
+
+/*slider container and checkbox container styles*/
+.slider-container, .checkbox-container {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.slider-container > * {
+    min-width: 20%;
+}
+
+
+.toolbar > form, .toolbar > p {
+    padding: 0.5rem;
+    background-color: rgb(56, 55, 58);
+}
+
+.toolbar form > div {
+    margin:  1rem 0 1rem 0;
 }
 
 input {
@@ -20,15 +76,57 @@ input {
     background-color: rgb(50, 50, 0);
 }
 
-button {
-    border: 2px dashed rgb(0, 255, 255);
-    background-color: rgb(50, 50, 0);
-    padding: 0.5rem;
+input:focus {
+    outline: rgb(255, 81, 0) 2px dashed;
 }
-
 
 input:invalid {
     background-color: rgb(211, 99, 151);
 }
 
+input:checked {
+    background-color: blue;
+}
 
+#message-panel {
+    color: rgb(255, 80, 80);
+}
+
+/*slider container styles*/
+.range-slider {
+    --webkit-appearance: none;
+    appearance: none;
+    border: rgb(21, 11, 26) double 2px;
+    height: 4px;
+}
+
+.range-slider:focus {
+    border: yellow solid 2px;
+    outline: double
+}
+
+.range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    rotate: 45,0,0;
+    background: rgb(0, 255, 255);
+    cursor: pointer;
+}
+/*checkbox styles*/
+.checkbox {
+    --webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+}
+.checkbox:checked {
+    background-color: rgb(255, 81, 0);
+}
+
+#message-panel {
+    border: none;
+    
+    min-height: 100px;
+}
