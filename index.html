@@ -30,7 +30,7 @@
                     </div>
                     <div>
                         <label for="zoom">Zoom In multiplier</label>
-                    <input type="number" min="0.1" max="2" id="zoom" value="2" step="0.01" required>
+                    <input type="number" min="0.1" max="100" id="zoom" value="2" step="0.01" required>
                     </div>
                     <div class="slider-container">
                         <label for="pan-x" id="pan-x-label">Pan X:</label>
@@ -53,7 +53,8 @@
                 <h2>Current image</h2>
                 <h3 id="max-iteration-display">Max iterations: </h3>
                 <h3 id="zoom-display">Current Zoom: </h3>
-                <h3 id="position-display"> X: __ I: __</h3>
+                <h3 id="position-x-display"> X: __ I: __</h3>
+                <h3 id="position-i-display"> X: __ I: __</h3>
             </section>
             <section class="flex-item item3">
                 <h2>Controls</h2>
@@ -70,7 +71,7 @@
                    the complex numbers go towards infinity (not in the set, coloured based on the number of iterations taken) or not (in the 
                    mandelbrot set, coloured black). For more information, click <a href="https://en.wikipedia.org/wiki/Mandelbrot_set" target="_blank">here.</a>
                 </p>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/2JUAojvFpCo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/2JUAojvFpCo" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 
             </section>
         </div>

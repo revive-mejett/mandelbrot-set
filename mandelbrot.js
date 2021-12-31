@@ -2,8 +2,6 @@
 import Coordinate from './src/Coordinate.js'
 
 
-let canvasWidth = 600
-let canvasHeight = 600
 const cycleMultiplier = 2 //determines the increment of new cycles of colours
 
 document.addEventListener('DOMContentLoaded', setup)
@@ -11,6 +9,11 @@ document.addEventListener('DOMContentLoaded', setup)
 //message panel
 let messagePanel
 
+//canvas's dimensions
+let canvasWidth = 600
+let canvasHeight = 600
+
+//offsets when converting from canvas position to coordinate
 let coordinateOffsetX
 let coordinateOffsetI
 
@@ -142,6 +145,9 @@ function fullRenderChange() {
     updateImageInfo()
 }
 
+/**
+ * Updates the info panel regarding image's current zoom
+ */
 function updateImageInfo() {
     console.log(document.querySelector('#max-iteration-display'));
     console.log(document.querySelector('#max-iteration-display'));
@@ -149,10 +155,14 @@ function updateImageInfo() {
     document.querySelector('#max-iteration-display').textContent = `Max iterations: ${maxIterations}`
     document.querySelector('#zoom-display').textContent = `Current Zoom: ${zoom}`
 
-    document.querySelector('#position-display').textContent = `View Position: X: ${panX} I: ${panI}`
-
+    document.querySelector('#position-x-display').textContent = `X: ${panX}`
+    document.querySelector('#position-i-display').textContent = `I: ${panI}`
 
 }
+
+/**
+ * Updates the multiplier based on the change of the slider values 
+ */
 function updatePanMultiplierValues() {
     const panXmultiplierInput = document.querySelector('#pan-x').value
     const panImultiplierInput = document.querySelector('#pan-i').value
@@ -163,6 +173,9 @@ function updatePanMultiplierValues() {
 
 }
 
+/**
+ * updates and validates max Iterations input value. Hides the full render checkbox such an invalid value is given
+ */
 function updateMaxIterationsValue() {
     maxIterations = document.querySelector('#max-iterations').value
 
@@ -178,6 +191,9 @@ function updateMaxIterationsValue() {
     }
 }
 
+/**
+ * Validates the zoom input so that it is positive. Hides the full render checkbox such an invalid value is given
+ */
 function validateZoomInput() {
     if (document.querySelector('#zoom').value <= 0) {
         messagePanel.textContent = '--Zoom multiplier must be positive  '
@@ -223,6 +239,9 @@ function burningShipEquation(coordinate, constant, iteration) {
 
 }
 
+/**
+ * Renders the image
+ */
 function drawFullImage() {
     const canvas = document.querySelector('.mandelbrot')
     let ctx = canvas.getContext('2d')

@@ -52,9 +52,14 @@ a {
 }
 
 /*slider container and checkbox container styles*/
-.slider-container, .checkbox-container {
+.slider-container {
     display: flex;
     justify-content: space-evenly;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
 }
 
 .slider-container > * {
@@ -74,6 +79,7 @@ a {
 input {
     border: 2px dashed rgb(0, 255, 255);
     background-color: rgb(50, 50, 0);
+    width: 80%;
 }
 
 input:focus {
@@ -129,4 +135,10 @@ input:checked {
     border: none;
     
     min-height: 100px;
+}
+
+/*Iframe style*/
+iframe {
+    width: 560px;
+    height: 315px;
 }
