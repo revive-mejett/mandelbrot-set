@@ -40,7 +40,9 @@ a {
     padding: 0.4 rem;
 }
 
-
+.flex-container h2 {
+    color: rgb(255, 81, 0);
+}
 .item1 {
     min-width: 300px;
     background-color: rgb(23, 61, 59);
