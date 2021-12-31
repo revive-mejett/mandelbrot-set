@@ -1,13 +1,23 @@
 
-
 body {
     background-color: rgb(21, 11, 26);
+    margin: 0;
 }
 
 body * {
     color: white;
 }
 
+header, footer {
+    background-color: rgb(71, 26, 0);
+    margin: 0;
+}
+
+header h1 ,footer h2 {
+    padding: 2rem;
+    margin: 0;
+    text-align: center;
+}
 a {
     color: rgb(255, 0, 191);
 }
