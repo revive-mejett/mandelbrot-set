@@ -34,8 +34,12 @@ let imageWidth = 4
 // whether full render is enabled or now
 let fullRenderEnabled
 
+let ctx;
+let canvas;
+
 function setup() {
-    const canvas = document.createElement('canvas')
+    canvas = document.createElement('canvas')
+    ctx = canvas.getContext('2d')
     messagePanel = document.querySelector('#message-panel')
     canvas.setAttribute('class', 'mandelbrot')
     canvas.setAttribute('height', `${canvasHeight}px`)
@@ -119,9 +123,6 @@ function setup() {
  * reRender function that is called after a key input (zoom in, panning)
  */
 function reRenderKey() {
-    const canvas = document.querySelector('.mandelbrot')
-    let ctx = canvas.getContext('2d')
-
     setTimeout(() => {
         drawFullImage()
     }, 0);
@@ -132,8 +133,6 @@ function reRenderKey() {
  * reRender function that is called when toggling full render mode change
  */
 function fullRenderChange() {
-    const canvas = document.querySelector('.mandelbrot')
-    let ctx = canvas.getContext('2d')
     fullRenderEnabled = document.querySelector('#full-render').checked
     imageWidth = (fullRenderEnabled ? 1 : 8)
 
@@ -210,7 +209,7 @@ function determineIterations(coordinate) {
     let resultCoordinate = new Coordinate(0,0)
 
     //loop until the coordinate diverges towards infinity or numberiterations exceeds max
-    while (resultCoordinate.magnitude() < 2 && numberIterations <= maxIterations) {
+    while (resultCoordinate.magnitudeSquared() < 4 && numberIterations <= maxIterations) {
         resultCoordinate = mandelbrotEquation(resultCoordinate, coordinate)
         numberIterations++
     }
@@ -243,42 +242,33 @@ function burningShipEquation(coordinate, constant, iteration) {
  * Renders the image
  */
 function drawFullImage() {
-    const canvas = document.querySelector('.mandelbrot')
-    let ctx = canvas.getContext('2d')
-    let pixelImage
-    let column
-    let row
-    
-    //colour all the rows in a loop
-    for (row = 0; row < canvasHeight; row+=imageWidth) {
-        colourRow()
-    }
-    
-    //colour a full row.
-    function colourRow() {
-        for (column = 0; column < canvasWidth; column += imageWidth) {
-            //color the single pixel (or the square if each unit > 1 pixel)
-            colourSquare()
-            ctx.putImageData(pixelImage, column, row)
-        }
-    }
+    const width = 600 / imageWidth;
+    const height = 600 / imageWidth;
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(imageWidth, imageWidth);
+
+    let pixelImage = ctx.createImageData(width, height);
 
     //colour a single square or pixel
-    function colourSquare() {
-        pixelImage = ctx.createImageData(imageWidth, imageWidth)
-        // get a coordinate based on the position of this square
-        let currentCoordinate = new Coordinate(convertToXCoordinate(column), convertToICoordinate(row))
-
+    function colourSquare(x, y) {
+        let currentCoordinate = new Coordinate(convertToXCoordinate(x), convertToICoordinate(y))
         //determine the colour based on the number of iterations
-        let colour = determineColour(determineIterations(currentCoordinate))
+        return determineColour(determineIterations(currentCoordinate))
+    }
 
-        for (let i = 0; i < pixelImage.data.length; i += 4) {
+    for(let x = 0; x < width; x++){
+        for(let y = 0; y < height; y++){
+            const colour =  colourSquare(x * imageWidth, y * imageWidth);
+            const i = (y * width + x) * 4;
             pixelImage.data[i] = colour.red //r
             pixelImage.data[i + 1] = colour.green //g
             pixelImage.data[i + 2] = colour.blue //b
             pixelImage.data[i + 3] = 255 //aplha
         }
     }
+
+    ctx.putImageData(pixelImage, 0, 0);
 }
 
 /**Determines the colour to be plotted based on how many iterations to expand the coordinate (or black if in mandelbrot set)
