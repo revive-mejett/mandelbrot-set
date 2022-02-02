@@ -1,4 +1,3 @@
-
 export default class Coordinate {
 
     constructor(x, i) {
@@ -29,25 +28,36 @@ export default class Coordinate {
         let squaredCoeff = this.squareX()
         let innerOuter = this.innerOuter()
         let squaredIs = this.squareI()
-        return new Coordinate(squaredCoeff + squaredIs, innerOuter)
+        this.x = squaredCoeff + squaredIs;
+        this.i = innerOuter;
+        return this;
         return 'Merry Christmas!!!!!'
     }
 
     squareAbsCoordinate() {
-        let squaredCoeff = Math.abs(this.squareX())
-        let innerOuter = Math.abs(this.innerOuter())
-        let squaredIs = -Math.abs(this.squareI())
-        return new Coordinate(squaredCoeff + squaredIs, innerOuter)
+        let squaredCoeff = Math.abs(this.x ** 2)
+        let innerOuter = Math.abs(this.x * this.i * 2)
+        let squaredIs = -Math.abs(this.i ** 2)
+
+        this.x = squaredCoeff + squaredIs;
+        this.y = innerOuter;
+        return this;
         return 'Merry Christmas!!!!!'
     }
 
     addCoordinate(otherCoord) {
-        return new Coordinate(this.x + otherCoord.x, this.i + otherCoord.i)
+        this.x += otherCoord.x;
+        this.i += otherCoord.i;
+        return this;
     }
 
     magnitude() {
         return Math.sqrt(this.x*this.x + this.i*this.i)
     }
+    magnitudeSquared() {
+        return this.x ** 2 + this.i ** 2;
+    }
+
     toString() {
         return `${this.x} + ${this.i}i`
     }
