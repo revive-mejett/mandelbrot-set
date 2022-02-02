@@ -62,3 +62,4 @@ export default class Coordinate {
         return `${this.x} + ${this.i}i`
     }
 }
+
