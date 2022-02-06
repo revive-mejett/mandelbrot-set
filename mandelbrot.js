@@ -34,8 +34,10 @@ let imageWidth = 1
 // whether full render is enabled or now
 let fullRenderEnabled
 
+//variables to hold handles of canvas and context
 let ctx;
 let canvas;
+
 
 function setup() {
     canvas = document.createElement('canvas')
