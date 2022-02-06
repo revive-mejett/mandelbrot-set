@@ -29,7 +29,7 @@ let panImultiplier = 1
 let maxIterations = 400
 
 // the width of a unit square.
-let imageWidth = 4
+let imageWidth = 1
 
 // whether full render is enabled or now
 let fullRenderEnabled
@@ -134,7 +134,7 @@ function reRenderKey() {
  */
 function fullRenderChange() {
     fullRenderEnabled = document.querySelector('#full-render').checked
-    imageWidth = (fullRenderEnabled ? 1 : 8)
+    // imageWidth = (fullRenderEnabled ? 1 : 8)
 
     ctx.clearRect(0, 0, canvasWidth, canvasHeight)
     
