@@ -5,5 +5,10 @@ This project is a simulation of a famous fractal known as the `Mandelbrot set`. 
 and complex numbers and the points are coloured in a 2d plane depending on how fast a resulting number grows after succesive iterations.
 
 ## Features
--Zoom in/out where you can zoom deep into the fractal until the precision limit of floating numbers in JS.
--Panning to pan the view
+<ul>
+  <li>Zoom in/out where you can zoom deep into the fractal until the precision limit of floating numbers in JS.</li>
+  <li>Panning to pan the view</li>
+</ul>
+  
+
+
